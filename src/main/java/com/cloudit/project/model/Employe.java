@@ -40,11 +40,7 @@ public class Employe implements Serializable {
     @OneToOne(mappedBy = "employe", cascade = CascadeType.REMOVE)
     Absence absence;
     @OneToMany (mappedBy = "employe")
-    Set<CongeAnnuel> CongeAnnuels;
-    @OneToMany (mappedBy = "employe")
-    Set<CongeExceptionnel> CongeExceptionnels;
-    @OneToMany (mappedBy = "employe")
-    Set<Arret> arrets;
+    Set<Conge> Conge;
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JsonIgnore
     Set<Poste> postes;
