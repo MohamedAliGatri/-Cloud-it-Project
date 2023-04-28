@@ -17,7 +17,7 @@ public class Poste implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id_poste;
-    String desg_poste;
+    String desgPoste;
     @ManyToMany(mappedBy = "postes")
     Set<Employe> employes;
 }

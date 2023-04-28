@@ -44,4 +44,5 @@ public class Employe implements Serializable {
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JsonIgnore
     Set<Poste> postes;
+
 }
