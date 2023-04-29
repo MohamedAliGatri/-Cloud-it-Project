@@ -1,8 +1,10 @@
 package com.cloudit.project.service;
 
+import com.cloudit.project.ExeptionHnadler.PetsNotFoundExeption;
 import com.cloudit.project.ExeptionHnadler.PlantsNotFoundExeption;
 import com.cloudit.project.ExeptionHnadler.ProjectsNotFoundExeption;
 import com.cloudit.project.Repository.PlantsRepo;
+import com.cloudit.project.model.Pets;
 import com.cloudit.project.model.Plants;
 import com.cloudit.project.model.Projects;
 import jakarta.transaction.Transactional;
@@ -20,9 +22,20 @@ public class PlantsService {
         pl_Repository = plRepository;
     }
 
-    public Plants addPlants(Plants Plant) {
-
+    public Plants addPlants(Plants Plant, Projects project) {
+        verifyPlantsNotExistInProject(Plant,project);
         return pl_Repository.save(Plant);
+    }
+
+    private void verifyPlantsNotExistInProject(Plants plant, Projects project) throws PetsNotFoundExeption {
+        // Vérifier si un animal avec le même identifiant existe déjà dans le projet
+        if ( pl_Repository.existsById(plant.getId())) {
+            throw new PetsNotFoundExeption("Animal already exists in the project.");
+        }
+        // Vérifier si un animal avec le même nom et type existe déjà dans le projet
+        if (pl_Repository.isPlantsAlreadyAssociatedWithAnotherProjects(plant.getId(), plant.getType(), project)) {
+            throw new PetsNotFoundExeption("An animal with the same name and type already exists in the project.");
+        }
     }
 
     public List<Plants> findAllPlants() {

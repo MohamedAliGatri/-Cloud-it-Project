@@ -1,14 +1,19 @@
 package com.cloudit.project.Controller;
 
+import com.cloudit.project.ExeptionHnadler.PetsNotFoundExeption;
 import com.cloudit.project.ExeptionHnadler.PlantsNotFoundExeption;
 import com.cloudit.project.Repository.PlantsRepo;
+import com.cloudit.project.Repository.ProjectsRepo;
+import com.cloudit.project.model.Pets;
 import com.cloudit.project.model.Plants;
 import com.cloudit.project.model.Projects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +21,8 @@ import java.util.Optional;
 @RestController
     @RequestMapping("/api/plants")
     public class PlantsController {
-
+    @Autowired
+    private ProjectsRepo projectrepository;
         @Autowired
         private PlantsRepo plantsRepository;
 
@@ -41,6 +47,25 @@ import java.util.Optional;
             Plants savedPlant = plantsRepository.save(plant);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedPlant);
         }
+
+    @PostMapping("/AffectPlant")
+    public ResponseEntity<Object> create(@RequestBody Plants plant, @RequestParam long projectId) {
+        try {
+            if (plantsRepository.isPlantsAlreadyAssociatedWithAnotherProjects(plant.getId(), plant.getType(), projectrepository.getOne(projectId))) {
+             throw new PetsNotFoundExeption("This plant already exists in the project");
+            }
+            Projects project = projectrepository.getOne(projectId);
+            plant.setProject(project);
+            Plants savedPet = plantsRepository.save(plant);
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                    .buildAndExpand(savedPet.getId()).toUri();
+            return ResponseEntity.created(location).build();
+        } catch (PetsNotFoundExeption ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<Plants> updatePlant(@PathVariable(value = "id") Long plantId, @RequestBody Plants plantDetails) {
