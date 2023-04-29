@@ -1,7 +1,7 @@
-package com.cloudit.project.servicelmpl;
+package com.cloudit.project.serviceImpl;
 
 import com.cloudit.project.model.PieceIdentite;
-import com.cloudit.project.repository.PieceIdentiteRepo;
+import com.cloudit.project.Repository.PieceIdentiteRepo;
 import com.cloudit.project.service.PieceIdentiteServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

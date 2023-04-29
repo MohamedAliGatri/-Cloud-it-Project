@@ -1,4 +1,4 @@
-package com.cloudit.project.repository;
+package com.cloudit.project.Repository;
 
 import com.cloudit.project.model.PieceIdentite;
 import org.springframework.data.jpa.repository.JpaRepository;

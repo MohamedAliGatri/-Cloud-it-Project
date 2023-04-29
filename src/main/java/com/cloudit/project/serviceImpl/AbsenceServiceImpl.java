@@ -1,7 +1,7 @@
-package com.cloudit.project.servicelmpl;
+package com.cloudit.project.serviceImpl;
 
 import com.cloudit.project.model.Absence;
-import com.cloudit.project.repository.AbsenceRepo;
+import com.cloudit.project.Repository.AbsenceRepo;
 import com.cloudit.project.service.AbsenceServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

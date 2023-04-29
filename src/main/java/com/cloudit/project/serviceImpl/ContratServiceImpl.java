@@ -1,7 +1,7 @@
-package com.cloudit.project.servicelmpl;
+package com.cloudit.project.serviceImpl;
 
 import com.cloudit.project.model.Contrat;
-import com.cloudit.project.repository.ContratRepo;
+import com.cloudit.project.Repository.ContratRepo;
 import com.cloudit.project.service.ContratServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

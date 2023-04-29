@@ -1,7 +1,7 @@
-package com.cloudit.project.servicelmpl;
+package com.cloudit.project.serviceImpl;
 
 import com.cloudit.project.model.Poste;
-import com.cloudit.project.repository.PosteRepo;
+import com.cloudit.project.Repository.PosteRepo;
 import com.cloudit.project.service.PosteServices;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,6 @@ public class PosteServicelmpl implements PosteServices {
 
     @Override
     public Poste addPoste(Poste poste) {
-        // Vérifier si le poste existe déjà
         if(posteRepository.findByDesgPoste(poste.getDesgPoste()) != null) {
             throw new IllegalArgumentException("Le poste existe déjà");
         }

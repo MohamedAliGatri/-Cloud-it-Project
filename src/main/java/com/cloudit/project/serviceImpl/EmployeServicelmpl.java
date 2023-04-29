@@ -1,9 +1,8 @@
-package com.cloudit.project.servicelmpl;
+package com.cloudit.project.serviceImpl;
 
 import com.cloudit.project.model.Conge;
-import com.cloudit.project.model.Contrat;
 import com.cloudit.project.model.Employe;
-import com.cloudit.project.repository.*;
+import com.cloudit.project.Repository.*;
 import com.cloudit.project.service.EmployeServices;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

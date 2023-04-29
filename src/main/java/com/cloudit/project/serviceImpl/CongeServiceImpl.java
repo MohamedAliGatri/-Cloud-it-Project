@@ -1,8 +1,8 @@
-package com.cloudit.project.servicelmpl;
+package com.cloudit.project.serviceImpl;
 
 import com.cloudit.project.model.Conge;
 import com.cloudit.project.model.TypeConge;
-import com.cloudit.project.repository.CongeRepo;
+import com.cloudit.project.Repository.CongeRepo;
 import com.cloudit.project.service.congeServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

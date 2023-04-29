@@ -1,16 +1,10 @@
 package com.cloudit.project.controller;
 
 import com.cloudit.project.model.Contrat;
-import com.cloudit.project.repository.ContratRepo;
 import com.cloudit.project.service.ContratServices;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.List;
 @RestController
 @RequestMapping("/contrats")

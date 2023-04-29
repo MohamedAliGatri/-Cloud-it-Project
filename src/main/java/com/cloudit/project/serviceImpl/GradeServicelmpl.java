@@ -1,7 +1,7 @@
-package com.cloudit.project.servicelmpl;
+package com.cloudit.project.serviceImpl;
 
 import com.cloudit.project.model.Grade;
-import com.cloudit.project.repository.GradeRepo;
+import com.cloudit.project.Repository.GradeRepo;
 import com.cloudit.project.service.GradeServices;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

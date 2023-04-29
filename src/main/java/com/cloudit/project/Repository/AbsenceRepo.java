@@ -1,4 +1,4 @@
-package com.cloudit.project.repository;
+package com.cloudit.project.Repository;
 
 import com.cloudit.project.model.Absence;
 import org.springframework.data.jpa.repository.JpaRepository;
