@@ -22,6 +22,7 @@ public class Orderr implements Serializable {
     Long id_order;
     Date dateOrder;
     String status;
+    double total;
 
     @OneToMany(mappedBy = "ordre")
     List<CartLine> listePanier = new ArrayList<>();

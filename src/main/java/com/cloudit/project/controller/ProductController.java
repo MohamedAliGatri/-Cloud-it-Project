@@ -32,4 +32,9 @@ public class ProductController {
     public Product getProductById(@PathVariable("id_product") Long id_product){
         return productservice.retrieveProduct(id_product);
     }
+
+    @PostMapping("/assignprodToCategory/{id_category}")
+    public Product assignProductToCategory(@RequestBody Product product,@PathVariable("id_category") Long id_category) {
+        return productservice.assignProductToCategory(product, id_category);
+    }
 }

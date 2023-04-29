@@ -19,7 +19,7 @@ public class Cart implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id_cart;
-    Integer quantity;
+    //Integer quantity;
     //@ManyToOne
     //User user;
     @OneToMany(mappedBy = "panier")
