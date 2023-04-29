@@ -1,14 +1,23 @@
 package com.cloudit.project.controller;
 
 import com.cloudit.project.model.ChatMessage;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import java.security.Principal;
+
 @Controller
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class WebSocketController {
+    final SimpMessagingTemplate simpMessagingTemplate;
     @MessageMapping("/chat.register")
     @SendTo("/chat/public")
     public String register(@Payload String chatMessage) {
@@ -28,4 +37,12 @@ public class WebSocketController {
     public String sendNotificationToDrivers(@Payload String notification){
         return notification;
     }
+    /*@MessageMapping("/chat.private")
+    public void sendPrivateMessage(Principal principal){
+        String sender=principal.getName();
+        String receiver="mohamed";
+        String message="hello chat";
+        simpMessagingTemplate.convertAndSendToUser(receiver, "/queue/private", "[" + sender + "]: " + message);
+
+    }*/
 }
