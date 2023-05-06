@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -22,5 +25,20 @@ public class User {
     public User(String username, String password) {
         this.username=username;
         this.password=password;
+    }
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private Set<Orders> orders = new HashSet<>();
+    public void add(Orders order) {
+
+        if (order != null) {
+
+            if (orders == null) {
+                orders = new HashSet<>();
+            }
+
+            orders.add(order);
+            order.setCustomer(this);
+        }
     }
 }

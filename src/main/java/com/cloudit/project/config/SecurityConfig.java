@@ -49,7 +49,7 @@ public class SecurityConfig {
         http.anonymous().disable();*/
         http
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                        .and()
+                        .and().authorizeHttpRequests().requestMatchers("/**").permitAll().and()
                 .authorizeHttpRequests().requestMatchers("/api/v1/login").permitAll().and()
                 .authorizeHttpRequests().requestMatchers("/cloudit/**").permitAll().and()
                                 .authorizeHttpRequests()
