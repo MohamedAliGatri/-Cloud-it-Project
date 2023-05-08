@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 import java.util.List;
-
+@CrossOrigin("*")
 @RestController
     @RequestMapping("/api/projects")
     public class ProjectsController {
@@ -15,8 +15,9 @@ import java.util.List;
         @Autowired
         private ProjectsRepo projectsRepository;
 
-        @GetMapping
+        @GetMapping("/all")
         public List<Projects> getAllProjects() {
+
             return projectsRepository.findAll();
         }
 
@@ -32,6 +33,7 @@ import java.util.List;
 
         @PostMapping("/")
         public Projects createProject(@RequestBody Projects project) {
+
             return projectsRepository.save(project);
         }
 
@@ -50,6 +52,8 @@ import java.util.List;
                 return ResponseEntity.notFound().build();
             }
         }
+
+
 
         @DeleteMapping("/{id}")
         public ResponseEntity deleteProject(@PathVariable Long id) {
