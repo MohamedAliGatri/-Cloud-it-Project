@@ -5,6 +5,7 @@ import com.cloudit.project.ExeptionHnadler.PetsNotFoundExeption;
 import com.cloudit.project.Repository.PetsRepo;
 import com.cloudit.project.Repository.ProjectsRepo;
 import com.cloudit.project.model.Pets;
+import com.cloudit.project.model.Plants;
 import com.cloudit.project.model.Projects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+@CrossOrigin("*")
 @RestController
 
     @RequestMapping("/api/pets")
@@ -39,13 +41,41 @@ import java.util.Optional;
                 return ResponseEntity.notFound().build();
             }
         }
+    @GetMapping("/petid/{id}")
+    public ResponseEntity<Pets> getPlantById(@PathVariable Long id) {
+        Pets  pet = petsRepository.findById(id).get();
+        if ((pet)==null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(pet);
+
+        }
+    }
+
+    @GetMapping("/projet/{id}")
+    public ResponseEntity<List<Pets>> getPetofprojectById(@PathVariable Long id) {
+        List<Pets> pet = petsRepository.findByIdprojet(id);
+        if (pet.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(pet);
+
+        }
+    }
+    @PutMapping("/update")
+    public ResponseEntity<Pets> updatePlant(@RequestBody Pets pet) {
+        Pets updatedPet = petsRepository.save(pet);
+        return ResponseEntity.ok(updatedPet);
+    }
+
+
 
     @PostMapping("/Ajoutpets")
     public ResponseEntity<Object> create(@RequestBody Pets pet, @RequestParam long projectId) {
         try {
-            //if (petsRepository.isPetsAlreadyAssociatedWithAnotherProjects(pet.getId(), pet.getType(), projectrepository.getOne(projectId))) {
-               // throw new PetsNotFoundExeption("This pet already exists in the project");
-           // }
+            if (petsRepository.isPetsAlreadyAssociatedWithAnotherProjects(pet.getId(), pet.getType(), projectrepository.getOne(projectId))) {
+                throw new PetsNotFoundExeption("This pet already exists in the project");
+            }
             Projects project = projectrepository.getOne(projectId);
             pet.setProject(project);
             Pets savedPet = petsRepository.save(pet);
@@ -58,6 +88,8 @@ import java.util.Optional;
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+
         @PostMapping("/")
         public Pets createPet(@RequestBody Pets pet) {
             return petsRepository.save(pet);

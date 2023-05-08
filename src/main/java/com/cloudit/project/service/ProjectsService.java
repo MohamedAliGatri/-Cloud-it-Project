@@ -32,8 +32,8 @@ public class ProjectsService {
 
     public Projects findProjectsById(Long id) {
 
-        return (Projects) p_Repository.findProjectsById(id)
-                .orElseThrow(() -> new ProjectsNotFoundExeption("project by id " + id + " was not found"));
+        return (Projects) p_Repository.findProjectsById(id);
+
     }
 
     public void deleteEmployee(Long id){

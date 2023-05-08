@@ -1,9 +1,11 @@
 package com.cloudit.project.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
@@ -14,7 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "Projects")
-public class Projects {
+public class Projects implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false,updatable = false)
@@ -22,13 +24,14 @@ public class Projects {
      private long Budget;
      private float Duration_months;
      private float land_area;
-
-     @JsonIgnore
+     private  String Title;
+     private float idUser;
      @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
-        Set<Pets> PetsSet;
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
-    Set<Plants> PlantsSet;
+     @JsonIgnore
+         Set<Pets> PetsSet;
+     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
+     @JsonIgnore
+         Set<Plants> PlantsSet;
 
 
 

@@ -1,8 +1,12 @@
 package com.cloudit.project.model;
 
 import com.cloudit.project.enumeration.typePlants;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.io.Serializable;
 
 @Entity
 @Getter
@@ -12,7 +16,7 @@ import lombok.*;
 @NoArgsConstructor
 @Table(name = "Plants")
 
-public class Plants extends  species{
+public class Plants extends  species implements Serializable {
     @Column(nullable = false)
     @Enumerated()
     private typePlants type;
@@ -24,6 +28,8 @@ public class Plants extends  species{
     private float Prune_quota;
 
     @ManyToOne
+    @JsonIgnoreProperties({"hibernateLazyInitializer"})
+
     Projects project;
 
 

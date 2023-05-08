@@ -2,12 +2,16 @@ package com.cloudit.project.Controller;
 
 import com.cloudit.project.ExeptionHnadler.PetsNotFoundExeption;
 import com.cloudit.project.ExeptionHnadler.PlantsNotFoundExeption;
+import com.cloudit.project.ExeptionHnadler.ProjectsNotFoundExeption;
 import com.cloudit.project.Repository.PlantsRepo;
 import com.cloudit.project.Repository.ProjectsRepo;
 import com.cloudit.project.model.Pets;
 import com.cloudit.project.model.Plants;
 import com.cloudit.project.model.Projects;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +21,9 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
-
+@CrossOrigin("*")
 @RestController
+@Slf4j
     @RequestMapping("/api/plants")
     public class PlantsController {
     @Autowired
@@ -31,16 +36,28 @@ import java.util.Optional;
 
             return plantsRepository.findAll();
         }
+    @GetMapping("/{id}")
+    public ResponseEntity<List<Plants>> getPlantofprojectById(@PathVariable Long id) {
+        List<Plants> plante = plantsRepository.findByIdprojet(id);
+       // if (plante.isEmpty()) {
+        //    return ResponseEntity.notFound().build();
+        //} else {
+            return ResponseEntity.ok(plante);
 
-        @GetMapping("/{id}")
-        public ResponseEntity<Plants> getPlantById(@PathVariable Long id) {
-            Optional<Plants> plant = plantsRepository.findById(id);
-            if (plant.isPresent()) {
-                return ResponseEntity.ok(plant.get());
-            } else {
-                return ResponseEntity.notFound().build();
-            }
+        //}
         }
+
+        @GetMapping("/planteid/{id}")
+        public ResponseEntity<Plants> getPlantById(@PathVariable Long id) {
+           Plants  plante = plantsRepository.findById(id).get();
+            if ((plante)==null) {
+                return ResponseEntity.notFound().build();
+            } else {
+                return ResponseEntity.ok(plante);
+
+            }
+    }
+
 
         @PostMapping
         public ResponseEntity<Plants> createPlant(@RequestBody Plants plant) {
@@ -48,50 +65,65 @@ import java.util.Optional;
             return ResponseEntity.status(HttpStatus.CREATED).body(savedPlant);
         }
 
-    @PostMapping("/AffectPlant")
-    public ResponseEntity<Object> create(@RequestBody Plants plant, @RequestParam long projectId) {
-        try {
-            if (plantsRepository.isPlantsAlreadyAssociatedWithAnotherProjects(plant.getId(), plant.getType(), projectrepository.getOne(projectId))) {
-             throw new PetsNotFoundExeption("This plant already exists in the project");
-            }
-            Projects project = projectrepository.getOne(projectId);
-            plant.setProject(project);
-            Plants savedPet = plantsRepository.save(plant);
-            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                    .buildAndExpand(savedPet.getId()).toUri();
-            return ResponseEntity.created(location).build();
-        } catch (PetsNotFoundExeption ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    @PostMapping("/affectplant/{projectId}")
+    public ResponseEntity<Object> create(@RequestBody Plants plant, @PathVariable long projectId) {
+
+          plant.setProject(projectrepository.findProjectsById(projectId));
+        if ((projectrepository.findProjectsById(projectId))==null) {
+            throw new ProjectsNotFoundExeption("ce projet n'existe pas veuillez creér un");
         }
+        Plants savedPlant = plantsRepository.save(plant);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedPlant);
+
+
+    }
+@Modifying
+     @Transactional
+    @PutMapping("/updateee")
+    public ResponseEntity<Plants> updatePlant(@RequestBody Plants plant) {
+            Plants pp=plantsRepository.findById(plant.getId()).get();
+
+            pp.setProject(pp.getProject());
+            pp.setType(pp.getType());
+            pp.setNutriments_quota(pp.getNutriments_quota());
+            pp.setPrune_quota(pp.getPrune_quota());
+            pp.setAge_Months(pp.getAge_Months());
+            pp.setArea_quota_m(pp.getArea_quota_m());
+            pp.setEmployee_quota(pp.getEmployee_quota());
+            pp.setWater_Quota(pp.getWater_Quota());
+
+        return ResponseEntity.ok(plantsRepository.save(pp));
+    }
+    @Modifying
+    @Transactional
+    @PutMapping("/update")
+    public ResponseEntity<Plants> updatePlants( @RequestBody Plants updatedPlants) {
+        Optional<Plants> optionalPlants = plantsRepository.findById(updatedPlants.getId());
+        if (!optionalPlants.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+
+
+        Plants plants = optionalPlants.get();
+        System.out.println(updatedPlants.getWater_Quota());
+        plants.setWater_Quota(updatedPlants.getWater_Quota());
+        plants.setEmployee_quota(updatedPlants.getEmployee_quota());
+        plants.setAge_Months(updatedPlants.getAge_Months());
+        plants.setArea_quota_m(updatedPlants.getArea_quota_m());
+        plants.setType(updatedPlants.getType());
+        plants.setSoilQuality_quota(updatedPlants.getSoilQuality_quota());
+        plants.setNutriments_quota(updatedPlants.getNutriments_quota());
+        plants.setPrune_quota(updatedPlants.getPrune_quota());
+        plants.setProject(updatedPlants.getProject());
+        Plants savedPlants = plantsRepository.save(plants);
+       //return ResponseEntity.ok(updatedPlants.getWater_Quota());
+        return ResponseEntity.ok(savedPlants);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Plants> updatePlant(@PathVariable(value = "id") Long plantId, @RequestBody Plants plantDetails) {
-        Plants plant = plantsRepository.findById(plantId)
-                .orElseThrow(() -> new PlantsNotFoundExeption("Plant", "id", plantId));
 
-        // Update plant details
-        plant.setArea_quota_m(plantDetails.getArea_quota_m());
-        plant.setAge_Months(plantDetails.getAge_Months());
-        plant.setEmployee_quota(plantDetails.getEmployee_quota());
-        plant.setWater_Quota(plantDetails.getWater_Quota());
-        plant.setPrune_quota(plantDetails.getPrune_quota());
-        plant.setNutriments_quota(plantDetails.getNutriments_quota());
-        plant.setSoilQuality_quota(plantDetails.getSoilQuality_quota());
-
-        // Set the project of the plant
-        Projects project = plantDetails.getProject();
-        if (project != null) {
-            plant.setProject(project);
-        }
-
-        Plants updatedPlant = plantsRepository.save(plant);
-        return ResponseEntity.ok(updatedPlant);
-    }
-
-        @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}")
         public ResponseEntity<?> deletePlant(@PathVariable Long id) {
             Optional<Plants> plant = plantsRepository.findById(id);
             if (plant.isPresent()) {
