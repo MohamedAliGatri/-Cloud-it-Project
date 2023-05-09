@@ -23,6 +23,9 @@ public interface PlantsRepo extends JpaRepository<Plants, Long> {
     @Query(value="SELECT * FROM Plants WHERE project_id = :type", nativeQuery = true)
     List<Plants> findByIdprojet(@Param("type") float id);
 
+    @Query(value="SELECT * FROM projects WHERE id = :idproj", nativeQuery = true)
+    Projects findMyProject(@Param("idproj") float id);
+
     @Query(value="UPDATE  Plants set project_id = :idProj where Plants.id = :idplante", nativeQuery = true)
     List<Plants> resetidproj(@Param("idProj") float id,@Param("idplante") float idplante);
 

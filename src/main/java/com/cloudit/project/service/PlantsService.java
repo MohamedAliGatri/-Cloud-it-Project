@@ -19,7 +19,8 @@ public class PlantsService {
     private final PlantsRepo pl_Repository;
 @Autowired
     public PlantsService(PlantsRepo plRepository) {
-        pl_Repository = plRepository;
+
+    pl_Repository = plRepository;
     }
 
     public Plants addPlants(Plants Plant, Projects project) {
@@ -50,6 +51,11 @@ public class PlantsService {
 
         return (Plants) pl_Repository.findPlantsById(id)
                 .orElseThrow(() -> new PlantsNotFoundExeption("Plant by id " + id + " was not found"));
+    }
+
+    public Projects findMine(long id)
+    {
+        return (Projects) pl_Repository.findMyProject(id);
     }
 
     public void deletePlants(Long id){

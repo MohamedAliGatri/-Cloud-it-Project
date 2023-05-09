@@ -2,12 +2,15 @@ package com.cloudit.project.Controller;
 
 
 import com.cloudit.project.ExeptionHnadler.PetsNotFoundExeption;
+import com.cloudit.project.ExeptionHnadler.ProjectsNotFoundExeption;
 import com.cloudit.project.Repository.PetsRepo;
 import com.cloudit.project.Repository.ProjectsRepo;
 import com.cloudit.project.model.Pets;
 import com.cloudit.project.model.Plants;
 import com.cloudit.project.model.Projects;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +34,19 @@ import java.util.Optional;
         @GetMapping
         public List<Pets> getAllPets() {return petsRepository.findAll();
         }
+    @PostMapping("/affectpet/{projectId}")
+    public ResponseEntity<Object> create(@RequestBody Pets pet, @PathVariable long projectId) {
 
+        pet.setProject(projectrepository.findProjectsById(projectId));
+        if ((projectrepository.findProjectsById(projectId))==null) {
+            throw new ProjectsNotFoundExeption("ce projet n'existe pas veuillez creér un");
+        }
+        Pets savedPlant = petsRepository.save(pet);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedPlant);
+
+
+    }
         @GetMapping("/{id}")
         public ResponseEntity<Pets> getPetById(@PathVariable Long id) {
             Optional<Pets> pet = petsRepository.findById(id);
@@ -62,16 +77,39 @@ import java.util.Optional;
 
         }
     }
+    //@Modifying
+    //@Transactional
+   // @PutMapping("/update")
+   // public ResponseEntity<Pets> updatePlant(@RequestBody Pets pet) {
+     //   Pets updatedPet = petsRepository.save(pet);
+       // return ResponseEntity.ok(updatedPet);
+    //}
+    @Modifying
+    @Transactional
     @PutMapping("/update")
-    public ResponseEntity<Pets> updatePlant(@RequestBody Pets pet) {
-        Pets updatedPet = petsRepository.save(pet);
-        return ResponseEntity.ok(updatedPet);
+    public ResponseEntity<Pets> updatePlants( @RequestBody Pets updatedPets) {
+        Optional<Pets> optionalPets = petsRepository.findById(updatedPets.getId());
+        if (!optionalPets.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        Pets pet = optionalPets.get();
+        System.out.println(updatedPets.getWater_Quota());
+        pet.setWater_Quota(updatedPets.getWater_Quota());
+        pet.setEmployee_quota(updatedPets.getEmployee_quota());
+        pet.setAge_Months(updatedPets.getAge_Months());
+        pet.setArea_quota_m(updatedPets.getArea_quota_m());
+        pet.setType(updatedPets.getType());
+        pet.setShelter_quota(updatedPets.getShelter_quota());
+        pet.setWeights(updatedPets.getWeights());
+        pet.setProject(updatedPets.getProject());
+        Pets savedPets = petsRepository.save(pet);
+        //return ResponseEntity.ok(updatedPlants.getWater_Quota());
+        return ResponseEntity.ok(savedPets);
     }
 
 
-
     @PostMapping("/Ajoutpets")
-    public ResponseEntity<Object> create(@RequestBody Pets pet, @RequestParam long projectId) {
+    public ResponseEntity<Object> createe(@RequestBody Pets pet, @RequestParam long projectId) {
         try {
             if (petsRepository.isPetsAlreadyAssociatedWithAnotherProjects(pet.getId(), pet.getType(), projectrepository.getOne(projectId))) {
                 throw new PetsNotFoundExeption("This pet already exists in the project");

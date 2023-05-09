@@ -1,7 +1,10 @@
 package com.cloudit.project.service;
 
-import com.cloudit.project.ExeptionHnadler.ProjectsNotFoundExeption;
+import com.cloudit.project.Repository.PetsRepo;
+import com.cloudit.project.Repository.PlantsRepo;
 import com.cloudit.project.Repository.ProjectsRepo;
+import com.cloudit.project.model.Pets;
+import com.cloudit.project.model.Plants;
 import com.cloudit.project.model.Projects;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +14,13 @@ import java.util.List;
 
 @Service
 @Transactional
-public class ProjectsService {
+public class ProjectsService  {
     private final ProjectsRepo p_Repository;
+
 @Autowired
     public ProjectsService(ProjectsRepo pRepository) {
         p_Repository = pRepository;
-    }
+}
     public Projects addProjects(Projects Project) {
 
         return p_Repository.save(Project);
@@ -36,7 +40,13 @@ public class ProjectsService {
 
     }
 
+
+
+
+
     public void deleteEmployee(Long id){
         p_Repository.deleteProjectsById(id);
     }
+
+
 }

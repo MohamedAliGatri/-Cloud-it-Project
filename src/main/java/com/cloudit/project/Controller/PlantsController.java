@@ -36,20 +36,22 @@ import java.util.Optional;
 
             return plantsRepository.findAll();
         }
-    @GetMapping("/{id}")
-    public ResponseEntity<List<Plants>> getPlantofprojectById(@PathVariable Long id) {
-        List<Plants> plante = plantsRepository.findByIdprojet(id);
-       // if (plante.isEmpty()) {
+
+    @GetMapping("myproj/{id}")
+    public ResponseEntity<Projects> getproj(@PathVariable Long id) {
+        Projects plante = plantsRepository.findMyProject(id);
+        // if (plante.isEmpty()) {
         //    return ResponseEntity.notFound().build();
         //} else {
-            return ResponseEntity.ok(plante);
+        return ResponseEntity.ok(plante);
 
         //}
-        }
+    }
 
-        @GetMapping("/planteid/{id}")
-        public ResponseEntity<Plants> getPlantById(@PathVariable Long id) {
-           Plants  plante = plantsRepository.findById(id).get();
+
+        @GetMapping("/{id}")
+        public ResponseEntity<List<Plants>> getPlantById(@PathVariable Long id) {
+           List<Plants> plante = plantsRepository.findByIdprojet(id);
             if ((plante)==null) {
                 return ResponseEntity.notFound().build();
             } else {
@@ -103,11 +105,7 @@ import java.util.Optional;
         if (!optionalPlants.isPresent()) {
             return ResponseEntity.notFound().build();
         }
-
-
-
         Plants plants = optionalPlants.get();
-        System.out.println(updatedPlants.getWater_Quota());
         plants.setWater_Quota(updatedPlants.getWater_Quota());
         plants.setEmployee_quota(updatedPlants.getEmployee_quota());
         plants.setAge_Months(updatedPlants.getAge_Months());
