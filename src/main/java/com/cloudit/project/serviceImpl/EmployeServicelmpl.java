@@ -1,13 +1,23 @@
 package com.cloudit.project.serviceImpl;
 
+import com.cloudit.project.model.Absence;
 import com.cloudit.project.model.Conge;
 import com.cloudit.project.model.Employe;
 import com.cloudit.project.Repository.*;
 import com.cloudit.project.service.EmployeServices;
+import com.cloudit.project.service.GradeServices;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfWriter;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.lowagie.text.Document;
 
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -22,6 +32,9 @@ public class EmployeServicelmpl implements EmployeServices {
 
     @Autowired
     private GradeRepo gradeRepository;
+    @Autowired
+
+    private PosteRepo posteRepository;
 
     @Autowired
     private PieceIdentiteRepo pieceIdentiteRepository;
@@ -49,7 +62,7 @@ public class EmployeServicelmpl implements EmployeServices {
         if (employe.getAdresse_emp() == null || employe.getAdresse_emp().trim().isEmpty()) {
             throw new IllegalArgumentException("Employe adresse_emp cannot be null or empty.");
         }
-        if (employe.getNum_tel_emp() == null || employe.getNum_tel_emp() <= 0) {
+        if (employe.getNumtelemp() == null || employe.getNumtelemp() <= 0) {
             throw new IllegalArgumentException("Employe num_tel_emp cannot be null or negative.");
         }
         if (employe.getNum_ss_emp() == null || employe.getNum_ss_emp() <= 0) {
@@ -58,13 +71,10 @@ public class EmployeServicelmpl implements EmployeServices {
         if (employe.getNum_cb_emp() == null || employe.getNum_cb_emp() <= 0) {
             throw new IllegalArgumentException("Employe num_cb_emp cannot be null or negative.");
         }
-        if (employe.getContrat() == null) {
-            throw new IllegalArgumentException("Employe contrat cannot be null.");
-        }
         if (employe.getGrade() == null) {
             throw new IllegalArgumentException("Employe grade cannot be null.");
         }
-        if (employe.getPostes() == null || employe.getPostes().isEmpty()) {
+        if (employe.getPoste() == null ) {
             throw new IllegalArgumentException("Employe postes cannot be null or empty.");
         }
         if (employe.getPieceIdentite() == null) {
@@ -74,12 +84,12 @@ public class EmployeServicelmpl implements EmployeServices {
         return employeRepository.save(employe);
     }
     @Override
-    public Employe updateEmploye(Employe employe) {
-        if (employe == null || employe.getMat_emp() == null) {
+    public Employe updateEmploye(Integer Id  ,Employe employe) {
+        if (employe == null || Id == null) {
             throw new IllegalArgumentException("Employe and matricule must not be null.");
         }
 
-        Employe existingEmploye = employeRepository.findById(employe.getMat_emp())
+        Employe existingEmploye = employeRepository.findById(Id)
                 .orElseThrow(() -> new EntityNotFoundException("Employe with matricule " + employe.getMat_emp() + " not found."));
 
         if (employe.getCivilite_emp() != null) {
@@ -103,8 +113,8 @@ public class EmployeServicelmpl implements EmployeServices {
         if (employe.getAdresse_emp() != null) {
             existingEmploye.setAdresse_emp(employe.getAdresse_emp());
         }
-        if (employe.getNum_tel_emp() != null) {
-            existingEmploye.setNum_tel_emp(employe.getNum_tel_emp());
+        if (employe.getNumtelemp() != null) {
+            existingEmploye.setNumtelemp(employe.getNumtelemp());
         }
         if (employe.getNum_ss_emp() != null) {
             existingEmploye.setNum_ss_emp(employe.getNum_ss_emp());
@@ -116,12 +126,11 @@ public class EmployeServicelmpl implements EmployeServices {
             existingEmploye.setContrat(employe.getContrat());
         }
         if (employe.getGrade() != null) {
-            existingEmploye.setGrade(employe.getGrade());
+            existingEmploye.setGrade(gradeRepository.getById(employe.getGrade().getId_grade()));
         }
 
-        if (employe.getPostes() != null) {
-            existingEmploye.getPostes().clear();
-            existingEmploye.getPostes().addAll(employe.getPostes());
+        if (employe.getPoste() != null) {
+            existingEmploye.setPoste(posteRepository.getById(employe.getPoste().getId_poste()));
         }
 
         return employeRepository.save(existingEmploye);
@@ -135,17 +144,17 @@ public class EmployeServicelmpl implements EmployeServices {
             if (e.getPieceIdentite() != null) {
                 pieceIdentiteRepository.delete(e.getPieceIdentite());
             }
-            if (e.getAbsence() != null) {
-                absenceRepository.delete(e.getAbsence());
+            if (e.getAbsences() != null) {
+                for(Absence abs: e.getAbsences()){
+                    absenceRepository.delete(abs);
+                }
             }
             if (e.getConge() != null) {
                 for (Conge c : e.getConge()) {
                     congeRepository.delete(c);
                 }
             }
-            if (e.getPostes() != null) {
-                e.getPostes().clear();
-            }
+
             employeRepository.delete(e);
         } else {
             throw new EntityNotFoundException("L'employé avec le matricule " + mat_emp + " n'existe pas.");
@@ -157,12 +166,24 @@ public class EmployeServicelmpl implements EmployeServices {
         if (optionalEmploye.isPresent()) {
             return optionalEmploye.get();
         } else {
-            throw new NoSuchElementException("Employe with id " + mat_emp + " does not exist");
+            throw new NoSuchElementException("Employe with numero" + mat_emp + " does not exist");
         }
+    }
+
+
+    @Override
+    public Employe getEmployeByNumTelEmp(Double NumTel){
+        Employe optionalEmploye = employeRepository.findByNumtelemp(NumTel);
+
+            return optionalEmploye;
+
     }
     @Override
     public List<Employe> getAllEmployes() {
         return employeRepository.findAll();
     }
-
+    @Override
+    public List<Employe> getAllEmployesAbsence(Date date) {
+        return employeRepository.findByAbsencesDateAndAbsences(date);
+    }
 }

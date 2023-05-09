@@ -17,11 +17,10 @@ public class PieceIdentiteServicelmpl implements PieceIdentiteServices {
 
     @Override
     public PieceIdentite addPieceIdentite(PieceIdentite pieceIdentite) {
-        if (pieceIdentite.getNum_pieceid() == null || pieceIdentite.getNum_pieceid().isEmpty() ||
+        if (pieceIdentite.getNum_pieceid() == null  ||
                 pieceIdentite.getType_pieceid() == null || pieceIdentite.getType_pieceid().isEmpty() ||
                 pieceIdentite.getDate_delieve_piece() == null ||
-                pieceIdentite.getLieu_delive_piece() == null || pieceIdentite.getLieu_delive_piece().isEmpty() ||
-                pieceIdentite.getEmploye() == null) {
+                pieceIdentite.getLieu_delive_piece() == null || pieceIdentite.getLieu_delive_piece().isEmpty()) {
             throw new IllegalArgumentException("Tous les champs sont obligatoires");
         }
         return pieceIdentiteRepository.save(pieceIdentite);

@@ -18,6 +18,8 @@ public class Poste implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id_poste;
     String desgPoste;
-    @ManyToMany(mappedBy = "postes")
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "poste")
+    @ToString.Exclude
     Set<Employe> employes;
 }

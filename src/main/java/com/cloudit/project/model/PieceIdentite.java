@@ -15,13 +15,13 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PieceIdentite implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id_pieceId_emp;
-    String num_pieceid;
+    Double num_pieceid;
     String type_pieceid;
     @Temporal(TemporalType.DATE)
     Date date_delieve_piece;
     String lieu_delive_piece;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE, mappedBy = "pieceIdentite")
+    @ToString.Exclude
+    @JsonIgnore
     Employe employe;
 }

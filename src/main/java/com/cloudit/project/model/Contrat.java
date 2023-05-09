@@ -24,6 +24,6 @@ public class Contrat implements Serializable {
     Date date_fin_cont;
     String motif_choix_cdd;
     String duree_acrt;
-    @OneToMany(mappedBy = "contrat", cascade = CascadeType.REMOVE)
-    Set<Employe> employes;
+    @OneToOne
+    Employe employe;
 }

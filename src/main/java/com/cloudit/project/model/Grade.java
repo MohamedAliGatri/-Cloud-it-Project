@@ -20,6 +20,7 @@ public class Grade implements Serializable {
     Double salaire_base;
     @JsonIgnore
     @OneToMany(mappedBy = "grade", cascade = CascadeType.REMOVE)
+    @ToString.Exclude
     Set<Employe> employes;
 
 }

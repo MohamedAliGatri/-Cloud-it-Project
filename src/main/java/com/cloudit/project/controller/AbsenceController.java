@@ -12,12 +12,14 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/absences")
+@RequestMapping("/absences/")
+@CrossOrigin("*")
+
 public class AbsenceController {
     @Autowired
     private AbsenceServices absenceService;
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<Absence> getAbsenceById(@PathVariable("id") Integer id) {
         Absence absence = absenceService.getAbsenceById(id);
         return ResponseEntity.ok().body(absence);
@@ -35,13 +37,13 @@ public class AbsenceController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newAbsence);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("{id}")
     public ResponseEntity<Absence> updateAbsence(@PathVariable("id") Integer id, @RequestBody @Validated Absence absence) {
         Absence updatedAbsence = absenceService.updateAbsence(absence);
         return ResponseEntity.ok().body(updatedAbsence);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteAbsence(@PathVariable("id") Integer id) {
         Absence absence = absenceService.getAbsenceById(id);
         absenceService.deleteAbsence(absence);

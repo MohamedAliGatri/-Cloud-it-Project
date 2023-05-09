@@ -1,5 +1,6 @@
 package com.cloudit.project.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import jakarta.persistence.*;
 import lombok.experimental.FieldDefaults;
@@ -19,6 +20,6 @@ public class Absence implements Serializable {
     Integer id_absence;
     @Temporal(TemporalType.DATE)
     Date date_absence;
-    @OneToOne(cascade =CascadeType.ALL)
-    Employe employe;
+    @ManyToOne(cascade =CascadeType.MERGE)
+    Employe employes;
 }

@@ -18,7 +18,6 @@ public abstract class Conge implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id_cong;
-
     String duree_cong;
     @Temporal(TemporalType.DATE)
     Date date_etab_titreConge;
@@ -35,7 +34,6 @@ public abstract class Conge implements Serializable {
     @Enumerated(EnumType.STRING)
     TypeConge typeConge;
     //Arret
-    Integer id_arret;
     String desg_arret;
     //Annuel
     @Temporal(TemporalType.DATE)

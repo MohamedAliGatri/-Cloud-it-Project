@@ -9,4 +9,5 @@ public interface PosteServices {
     List<Poste> getAllPostes();
     Poste getPosteById(Integer id);
     void deletePoste(Integer id);
+    Poste updatePoste(Integer id,Poste poste);
 }

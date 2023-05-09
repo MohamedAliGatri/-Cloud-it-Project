@@ -1,6 +1,8 @@
 package com.cloudit.project.controller;
 
+import com.cloudit.project.model.Employe;
 import com.cloudit.project.model.PieceIdentite;
+import com.cloudit.project.service.EmployeServices;
 import com.cloudit.project.service.PieceIdentiteServices;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +12,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 @RestController
-@RequestMapping("/pieceIdentites")
+@RequestMapping("/pieceIdentites/")
+@CrossOrigin("*")
 public class PieceIdentiteController {
 
     @Autowired
     private PieceIdentiteServices pieceIdentiteService;
+    @Autowired
+    private EmployeServices employeServices;
 
     @PostMapping("")
     public ResponseEntity<PieceIdentite> addPieceIdentite(@Valid @RequestBody PieceIdentite pieceIdentite) {
@@ -35,8 +40,8 @@ public class PieceIdentiteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PieceIdentite> updatePieceIdentite(@PathVariable("id") Integer id, @Valid @RequestBody PieceIdentite pieceIdentite) {
-        pieceIdentite.setId_pieceId_emp(id);
+    public ResponseEntity<PieceIdentite> updatePieceIdentite(@PathVariable("id") Double id, @Valid @RequestBody PieceIdentite pieceIdentite) {
+        pieceIdentite.setNum_pieceid(id);
         PieceIdentite updatedPieceIdentite = pieceIdentiteService.addPieceIdentite(pieceIdentite);
         return ResponseEntity.ok(updatedPieceIdentite);
     }

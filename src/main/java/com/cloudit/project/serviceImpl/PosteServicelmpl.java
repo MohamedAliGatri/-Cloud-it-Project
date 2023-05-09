@@ -1,8 +1,10 @@
 package com.cloudit.project.serviceImpl;
 
+import com.cloudit.project.model.Grade;
 import com.cloudit.project.model.Poste;
 import com.cloudit.project.Repository.PosteRepo;
 import com.cloudit.project.service.PosteServices;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,5 +41,11 @@ public class PosteServicelmpl implements PosteServices {
     @Override
     public void deletePoste(Integer id) {
         posteRepository.deleteById(id);
+    }
+    @Override
+    public Poste updatePoste(Integer id, Poste poste) {
+        Poste gradeToUpdate = posteRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Poste not found with id " + id));
+        gradeToUpdate.setDesgPoste(poste.getDesgPoste());
+        return posteRepository.save(gradeToUpdate);
     }
 }

@@ -1,5 +1,6 @@
 package com.cloudit.project.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import jakarta.persistence.*;
 import lombok.experimental.FieldDefaults;
@@ -25,24 +26,24 @@ public class Employe implements Serializable {
     Date dns_emp;
     String lieu_ns_emp;
     String adresse_emp;
-    Integer num_tel_emp;
-    Integer num_ss_emp;
-    Integer num_cb_emp;
-    Integer id_contrat;
-    Integer id_grade;
-    @JsonIgnore
-    @OneToOne(mappedBy = "employe")
+    Double numtelemp;
+    Double num_ss_emp;
+    Double num_cb_emp;
+    @OneToOne
     PieceIdentite pieceIdentite;
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    Contrat contrat;
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    Grade grade;
     @OneToOne(mappedBy = "employe", cascade = CascadeType.REMOVE)
-    Absence absence;
+    Contrat contrat;
+    @ManyToOne( cascade = CascadeType.PERSIST)
+    @JsonIgnoreProperties({"hibernateLazyInitializer"})
+    Grade grade;
+    @OneToMany(mappedBy = "employes", cascade = CascadeType.REMOVE)
+    @JsonIgnore
+    @ToString.Exclude
+    Set<Absence> absences;
     @OneToMany (mappedBy = "employe")
     Set<Conge> Conge;
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JsonIgnore
-    Set<Poste> postes;
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JsonIgnoreProperties({"hibernateLazyInitializer"})
+    Poste poste;
 
 }
